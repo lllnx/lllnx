@@ -23,6 +23,9 @@
  */
 
 #include "mangle.h"
+#include "common.h"
+#include "log.h"
+#include "util.h"
 
 #include <ctype.h>
 #include <inttypes.h>
