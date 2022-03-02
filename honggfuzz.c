@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - the main file
+ * honggfuzz - the main file//主文件
  * -----------------------------------------
  *
  * Authors: Robert Swiecki <swiecki@google.com>
@@ -50,6 +50,7 @@ static bool clearWin    = false;
 /*
  * CygWin/MinGW incorrectly copies stack during fork(), so we need to keep some
  * structures in the data section
+ * CygWin/MinGW在fork()期间错误地复制了堆栈，所以我们需要保留一些数据部分中的结构
  */
 honggfuzz_t hfuzz;
 
