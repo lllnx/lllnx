@@ -128,6 +128,7 @@ static void fuzz_setDynamicMainState(run_t* run) {
     /*
      * If the initial fuzzing yielded no useful coverage, just add a single empty file to the
      * dynamic corpus, so the dynamic phase doesn't fail because of lack of useful inputs
+     * 如果最初的模糊化没有产生有用的覆盖，只需向动态语料库中添加一个空文件，这样动态阶段就不会因为缺少有用的输入而失败
      */
     if (run->global->io.dynfileqCnt == 0) {
         dynfile_t dynfile = {
@@ -219,6 +220,7 @@ static void fuzz_perfFeedback(run_t* run) {
     int64_t diff1 = (int64_t)run->global->feedback.hwCnts.cpuBranchCnt - run->hwCnts.cpuBranchCnt;
 
     /* Any increase in coverage (edge, pc, cmp, hw) counters forces adding input to the corpus */
+    //在任何一种覆盖情况下(edge, pc, cmp, hw)计数器都会强制向语料库添加输入
     if (run->hwCnts.newBBCnt > 0 || softNewPC > 0 || softNewEdge > 0 || softNewCmp > 0 ||
         diff0 < 0 || diff1 < 0) {
         if (diff0 < 0) {
@@ -241,6 +243,7 @@ static void fuzz_perfFeedback(run_t* run) {
             run->hwCnts.bbCnt, softCurEdge, softCurPC, softCurCmp);
 
         /* Update per-input coverage metrics */
+        //更新每输入覆盖率指标
         run->dynfile->cov[0] = softCurEdge + softCurPC + run->hwCnts.bbCnt;
         run->dynfile->cov[1] = softCurCmp;
         run->dynfile->cov[2] = run->hwCnts.cpuInstrCnt + run->hwCnts.cpuBranchCnt;
@@ -255,6 +258,7 @@ static void fuzz_perfFeedback(run_t* run) {
 }
 
 /* Return value indicates whether report file should be updated with the current verified crash */
+//返回值指示是否应使用当前已验证的崩溃更新报告文件
 static bool fuzz_runVerifier(run_t* run) {
     if (!run->crashFileName[0] || !run->backtrace) {
         return false;
@@ -287,6 +291,7 @@ static bool fuzz_runVerifier(run_t* run) {
         }
 
         /* If stack hash doesn't match skip name tag and exit */
+        //如果堆栈哈希不匹配，跳过名称标记并退出
         if (run->backtrace != backtrace) {
             LOG_E("Verifier stack mismatch: (original) %" PRIx64 " != (new) %" PRIx64, backtrace,
                 run->backtrace);
@@ -299,6 +304,7 @@ static bool fuzz_runVerifier(run_t* run) {
     }
 
     /* Copy file with new suffix & remove original copy */
+    //使用新后缀复制文件并删除原始副本
     int fd = TEMP_FAILURE_RETRY(open(verFile, O_CREAT | O_EXCL | O_WRONLY, 0600));
     if (fd == -1 && errno == EEXIST) {
         LOG_I("It seems that '%s' already exists, skipping", verFile);
@@ -450,6 +456,9 @@ static void fuzz_fuzzLoopSocket(run_t* run) {
        Other iterations: re-start target, if necessary
        subproc_Run() will decide by itself if a restart is necessary, via
        subproc_New()
+       第一次迭代：开始目标
+       其他迭代：如有必要，重新启动目标
+       subproc_Run（）将自行决定是否需要subproc_New()重新启动
     */
     LOG_D("------[ 1: subproc_run");
     if (!subproc_Run(run)) {
@@ -458,6 +467,8 @@ static void fuzz_fuzzLoopSocket(run_t* run) {
 
     /* Tell the external fuzzer to send data to target
        The fuzzer will notify us when finished; block until then.
+       告诉外部模糊器向目标发送数据
+       fuzzer完成后会通知我们；一直到锁住的时候
     */
     LOG_D("------[ 2: fetch input");
     if (!fuzz_waitForExternalInput(run)) {
@@ -501,6 +512,7 @@ static void* fuzz_threadNew(void* arg) {
     };
 
     /* Do not try to handle input files with socketfuzzer */
+    //不要试图用socketfuzzer处理输入文件
     char mapname[32];
     snprintf(mapname, sizeof(mapname), "hf-%u-input", fuzzNo);
     if (!hfuzz->socketFuzzer.enabled) {
@@ -534,6 +546,7 @@ static void* fuzz_threadNew(void* arg) {
 
     for (;;) {
         /* Check if dry run mode with verifier enabled */
+        //检查验证器是否启用了dry run mode
         if (run.global->mutate.mutationsPerRun == 0U && run.global->cfg.useVerifier &&
             !hfuzz->socketFuzzer.enabled) {
             if (ATOMIC_POST_INC(run.global->cnts.mutationsCnt) >= run.global->io.fileCnt) {
