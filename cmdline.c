@@ -1,6 +1,6 @@
 /*
 
-   honggfuzz - cmdline parsing
+   honggfuzz - cmdline parsing//命令行命令解析
 
    -----------------------------------------
 
