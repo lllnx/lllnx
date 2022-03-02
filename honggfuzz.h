@@ -108,7 +108,7 @@ static const uint8_t HFReadyTag = 'R';
 /* HF NetDriver signature - if found within file, it means it's a NetDriver-based binary HF NetDriver签名——如果在文件中找到，则表示它是基于NetDriver的二进制文件*/
 #define _HF_NETDRIVER_SIG "\x01_LIBHFUZZ_NETDRIVER_BINARY_SIGNATURE_\x02\xFF"
 
-/* printf() nonmonetary separator. According to MacOSX's man it's supported there as well printf（）非货币分隔符。据MacOSX的人说，它在那里也得到了支持*/
+/* printf() nonmonetary separator. According to MacOSX's man it's supported there as well .printf()非货币分隔符。据MacOSX的人说，它在那里也得到了支持*/
 #define _HF_NONMON_SEP "'"
 
 typedef enum {
