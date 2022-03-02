@@ -41,74 +41,74 @@
 #define PROG_NAME    "honggfuzz"
 #define PROG_VERSION "2.5"
 
-/* Name of the template which will be replaced with the proper name of the file */
+/* Name of the template which will be replaced with the proper name of the file即使用测试文件名称替换___FILE___ */
 #define _HF_FILE_PLACEHOLDER "___FILE___"
 
-/* Default name of the report created with some architectures */
+/* Default name of the report created with some architectures 使用某些体系结构创建的报告的默认名称*/
 #define _HF_REPORT_FILE "HONGGFUZZ.REPORT.TXT"
 
-/* Default stack-size of created threads. */
+/* Default stack-size of created threads. 已创建线程默认堆大小*/
 #define _HF_PTHREAD_STACKSIZE (1024ULL * 1024ULL * 2ULL) /* 2MB */
 
-/* Name of envvar which indicates sequential number of fuzzer */
+/* Name of envvar which indicates sequential number of fuzzer envvar的名称，表示模糊程序的序列号 */
 #define _HF_THREAD_NO_ENV "HFUZZ_THREAD_NO"
 
 /* Name of envvar which indicates that the netDriver should be used */
 #define _HF_THREAD_NETDRIVER_ENV "HFUZZ_USE_NETDRIVER"
 
-/* Name of envvar which indicates honggfuzz's log level in use */
+/* Name of envvar which indicates honggfuzz's log level in use  envvar的名称，该名称表示honggfuzz正在使用的日志级别 */
 #define _HF_LOG_LEVEL_ENV "HFUZZ_LOG_LEVEL"
 
-/* Number of crash verifier iterations before tag crash as stable */
+/* Number of crash verifier iterations before tag crash as stable 标记崩溃为稳定之前的崩溃验证器迭代次数*/
 #define _HF_VERIFIER_ITER 5
 
-/* Size (in bytes) for report data to be stored in stack before written to file */
+/* Size (in bytes) for report data to be stored in stack before written to file 写入文件前要存储在堆栈中的报告数据的大小（字节）*/
 #define _HF_REPORT_SIZE 32768
 
-/* Perf bitmap size */
+/* Perf bitmap size 性能位图大小*/
 #define _HF_PERF_BITMAP_SIZE_16M   (1024U * 1024U * 16U)
 #define _HF_PERF_BITMAP_BITSZ_MASK 0x7FFFFFFULL
-/* Maximum number of PC guards (=trace-pc-guard) we support */
+/* Maximum number of PC guards (=trace-pc-guard) we support 我们支持的最大PC guards数量（=trace-pc-guard）*/
 #define _HF_PC_GUARD_MAX (1024ULL * 1024ULL * 64ULL)
 
-/* Maximum size of the input file in bytes (1 MiB) */
+/* Maximum size of the input file in bytes (1 MiB) 输入文件的最大大小（字节）（1 MiB）*/
 #define _HF_INPUT_MAX_SIZE (1024ULL * 1024ULL)
 
-/* Default maximum size of produced inputs */
+/* Default maximum size of produced inputs 生成的输入的默认最大大小*/
 #define _HF_INPUT_DEFAULT_SIZE (1024ULL * 8)
 
-/* Per-thread bitmap */
+/* Per-thread bitmap 每个线程位图*/
 #define _HF_PERTHREAD_BITMAP_FD 1018
-/* FD used to report back used int/str constants from the fuzzed process */
+/* FD used to report back used int/str constants from the fuzzed process FD用于报告模糊过程中使用的int/str常量*/
 #define _HF_CMP_BITMAP_FD 1019
-/* FD used to log inside the child process */
+/* FD used to log inside the child process FD用于记录子进程内部*/
 #define _HF_LOG_FD 1020
-/* FD used to represent the input file */
+/* FD used to represent the input file FD用于表示输入文件*/
 #define _HF_INPUT_FD 1021
-/* FD used to pass coverage feedback from the fuzzed process */
+/* FD used to pass coverage feedback from the fuzzed process FD用于传递模糊过程的覆盖反馈*/
 #define _HF_COV_BITMAP_FD 1022
 #define _HF_BITMAP_FD     _HF_COV_BITMAP_FD /* Old name for _HF_COV_BITMAP_FD */
-/* FD used to pass data to a persistent process */
+/* FD used to pass data to a persistent process FD用于将数据传递给持久化进程*/
 #define _HF_PERSISTENT_FD 1023
 
-/* Input file as a string */
+/* Input file as a string 以字符串形式输入文件*/
 #define _HF_INPUT_FILE_PATH "/dev/fd/" HF_XSTR(_HF_INPUT_FD)
 
-/* Maximum number of supported execve() args */
+/* Maximum number of supported execve() args 支持的execve（）参数的最大数量*/
 #define _HF_ARGS_MAX 2048
 
-/* Message indicating that the fuzzed process is ready for new data */
+/* Message indicating that the fuzzed process is ready for new data 指示模糊化进程已准备好接收新数据的消息*/
 static const uint8_t HFReadyTag = 'R';
 
-/* Maximum number of active fuzzing threads */
+/* Maximum number of active fuzzing threads 活动模糊线程的最大数量*/
 #define _HF_THREAD_MAX 1024U
 
-/* Persistent-binary signature - if found within file, it means it's a persistent mode binary */
+/* Persistent-binary signature - if found within file, it means it's a persistent mode binary 持久二进制签名——如果在文件中找到，则表示它是一个持久模式二进制签名*/
 #define _HF_PERSISTENT_SIG "\x01_LIBHFUZZ_PERSISTENT_BINARY_SIGNATURE_\x02\xFF"
-/* HF NetDriver signature - if found within file, it means it's a NetDriver-based binary */
+/* HF NetDriver signature - if found within file, it means it's a NetDriver-based binary HF NetDriver签名——如果在文件中找到，则表示它是基于NetDriver的二进制文件*/
 #define _HF_NETDRIVER_SIG "\x01_LIBHFUZZ_NETDRIVER_BINARY_SIGNATURE_\x02\xFF"
 
-/* printf() nonmonetary separator. According to MacOSX's man it's supported there as well */
+/* printf() nonmonetary separator. According to MacOSX's man it's supported there as well printf（）非货币分隔符。据MacOSX的人说，它在那里也得到了支持*/
 #define _HF_NONMON_SEP "'"
 
 typedef enum {
