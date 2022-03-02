@@ -44,6 +44,11 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "common.h"
+#include "log.h"
+#include "files.h"
+#include "util.h"
+
 #include "display.h"
 #include "libhfcommon/common.h"
 #include "libhfcommon/files.h"
@@ -62,6 +67,11 @@ static bool checkFor_FILE_PLACEHOLDER(const char* const* args) {
         }
     }
     return false;
+}
+
+static const char *cmdlineYesNo(bool yes)
+{
+    return (yes ? "true" : "false");
 }
 
 static bool cmdlineCheckBinaryType(honggfuzz_t* hfuzz) {
@@ -400,6 +410,12 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                 .blocklist             = NULL,
                 .blocklistCnt          = 0,
                 .skipFeedbackOnTimeout = false,
+              
+                .pc_list = {0},
+                .stack_list = {0},
+                .pc_index = 0,
+                .stack_index = 0,
+           
                 .dynFileMethod         = _HF_DYNFILE_SOFT,
                 .state                 = _HF_STATE_UNSET,
                 .hwCnts =
@@ -706,6 +722,13 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
             case 0x104:
                 hfuzz->exe.stackLimit = strtoull(optarg, NULL, 0);
                 break;
+            case 0x105:
+                if ((strcasecmp(optarg, "0") == 0) || (strcasecmp(optarg, "false") == 0)) {
+                hfuzz->monitorSIGABRT = false;
+                     } else {
+                        hfuzz->monitorSIGABRT = true;
+                     }
+                     break;
             case 0x111:
                 hfuzz->exe.postExternalCommand = optarg;
                 break;
