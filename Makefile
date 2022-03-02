@@ -201,47 +201,6 @@ ifdef DEBUG
     LDFLAGS += -g -ggdb -g3
 endif
 
-# Control Android builds
-ANDROID_API           ?= android-30 # Minimal working version is android-30 (ndk 22)
-ANDROID_DEBUG_ENABLED ?= false
-ANDROID_APP_ABI       ?= arm64-v8a
-ANDROID_SKIP_CLEAN    ?= false
-NDK_BUILD_ARGS :=
-
-ifeq ($(ANDROID_DEBUG_ENABLED),true)
-  NDK_BUILD_ARGS += V=1 NDK_DEBUG=1 APP_OPTIM=debug
-endif
-
-# By default ndk-build cleans all project files to ensure that no semi-completed
-# builds reach the app package. The following flag disables this check. It's mainly
-# purposed to be used with android-all rule where we want recursive invocations
-# to keep previous targets' binaries.
-ifeq ($(ANDROID_SKIP_CLEAN),true)
-  NDK_BUILD_ARGS += NDK_APP.local.cleaned_binaries=true
-endif
-
-ANDROID_NDK_TOOLCHAIN_VER := clang
-# clang works only against APIs >= 23
-ifeq ($(ANDROID_APP_ABI),$(filter $(ANDROID_APP_ABI),armeabi-v7a))
-  ANDROID_NDK_TOOLCHAIN ?= arm-linux-androideabi-clang
-  ANDROID_NDK_COMPILER_PREFIX := armv7a-linux-androideabi
-  ANDROID_ARCH_CPU := arm
-else ifeq ($(ANDROID_APP_ABI),$(filter $(ANDROID_APP_ABI),x86))
-  ANDROID_NDK_TOOLCHAIN ?= x86-clang
-  ANDROID_NDK_COMPILER_PREFIX := i686-linux-android
-  ANDROID_ARCH_CPU := x86
-else ifeq ($(ANDROID_APP_ABI),$(filter $(ANDROID_APP_ABI),arm64-v8a))
-  ANDROID_NDK_TOOLCHAIN ?= aarch64-linux-android-clang
-  ANDROID_NDK_COMPILER_PREFIX := aarch64-linux-android
-  ANDROID_ARCH_CPU := arm64
-else ifeq ($(ANDROID_APP_ABI),$(filter $(ANDROID_APP_ABI),x86_64))
-  ANDROID_NDK_TOOLCHAIN ?= x86_64-clang
-  ANDROID_NDK_COMPILER_PREFIX := x86_64-linux-android
-  ANDROID_ARCH_CPU := x86_64
-else
-   $(error Unsuported / Unknown APP_API '$(ANDROID_APP_ABI)')
-endif
-
 
 SUBDIR_ROOTS := linux mac netbsd posix libhfuzz libhfcommon libhfnetdriver
 DIRS := . $(shell find $(SUBDIR_ROOTS) -type d)
@@ -313,52 +272,6 @@ indent:
 .PHONY: depend
 depend: all
 	makedepend -Y. -Y* -- *.c */*.c
-
-.PHONY: android
-android:
-	$(info ***************************************************************)
-	$(info *                 Use Android NDK 22 or newer                 *)
-	$(info ***************************************************************)
-	@ANDROID_API=$(ANDROID_API) ANDROID_NDK_COMPILER_PREFIX=$(ANDROID_NDK_COMPILER_PREFIX) third_party/android/scripts/compile-libunwind.sh \
-	third_party/android/libunwind $(ANDROID_ARCH_CPU)
-
-	@ANDROID_API=$(ANDROID_API) ANDROID_NDK_COMPILER_PREFIX=$(ANDROID_NDK_COMPILER_PREFIX) third_party/android/scripts/compile-capstone.sh \
-	third_party/android/capstone $(ANDROID_ARCH_CPU)
-
-	@ANDROID_API=$(ANDROID_API) ANDROID_NDK_COMPILER_PREFIX=$(ANDROID_NDK_COMPILER_PREFIX) third_party/android/scripts/compile-libBlocksRuntime.sh \
-	third_party/android/libBlocksRuntime $(ANDROID_ARCH_CPU)
-
-	ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./android/Android.mk \
-    APP_PLATFORM=$(ANDROID_API) APP_ABI=$(ANDROID_APP_ABI) \
-    NDK_TOOLCHAIN=$(ANDROID_NDK_TOOLCHAIN) NDK_TOOLCHAIN_VERSION=$(ANDROID_NDK_TOOLCHAIN_VER) \
-    $(NDK_BUILD_ARGS) APP_MODULES='honggfuzz hfuzz hfnetdriver'
-
-# Loop all ABIs and pass-through flags since visibility is lost due to sub-process
-.PHONY: android-all
-android-all:
-	@echo "Cleaning workspace:"
-	$(MAKE) clean
-	@echo ""
-
-	for abi in armeabi-v7a arm64-v8a x86 x86_64; do \
-	  ANDROID_APP_ABI=$$abi ANDROID_SKIP_CLEAN=true \
-	  ANDROID_API=$(ANDROID_API) ANDROID_DEBUG_ENABLED=$(ANDROID_DEBUG_ENABLED) \
-	  $(MAKE) android || { \
-	    echo "Recursive make failed"; exit 1; }; \
-	  echo ""; \
-	done
-
-.PHONY: android-clean-deps
-android-clean-deps:
-	@for cpu in arm arm64 x86 x86_64; do \
-	  make -C "third_party/android/capstone" clean; \
-	  rm -rf "third_party/android/capstone/$$cpu"; \
-	  make -C "third_party/android/libunwind" clean; \
-	  rm -rf "third_party/android/libunwind/$$cpu"; \
-	  ndk-build -C "third_party/android/libBlocksRuntime" \
-	    NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk clean; \
-	  rm -rf "third_party/android/libBlocksRuntime/$$cpu"; \
-	done
 
 PREFIX		?= /usr/local
 BIN_PATH	= $(PREFIX)/bin
