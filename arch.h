@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - architecture dependent code
+ * honggfuzz - architecture dependent code//依赖系统结构的代码
  * -----------------------------------------
  *
  * Author: Robert Swiecki <swiecki@google.com>
