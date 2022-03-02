@@ -613,3 +613,14 @@ void fuzz_threadsStart(honggfuzz_t* hfuzz) {
         }
     }
 }
+
+void fuzz_threadsStop(honggfuzz_t * hfuzz, pthread_t * threads)
+{
+    for (size_t i = 0; i < hfuzz->threads.threadsMaxx; i++) {
+        void *retval;
+        if (pthread_join(threads.threads[i], &retval) != 0) {
+            PLOG_F("Couldn't pthread_join() thread: %zu", i);
+        }
+    }
+    LOG_I("All threads done");
+}
