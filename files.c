@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - file operations
+ * honggfuzz - file operations//文件操作
  * -----------------------------------------
  *
  * Author: Robert Swiecki <swiecki@google.com>
