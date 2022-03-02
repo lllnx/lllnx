@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - display statistics
+ * honggfuzz - display statistics//显示统计数据
  * -----------------------------------------
  *
  * Author: Robert Swiecki <swiecki@google.com>
