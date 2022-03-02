@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - fuzzing routines
+ * honggfuzz - fuzzing routines// 模糊测试顺序
  * -----------------------------------------
  *
  * Authors: Robert Swiecki <swiecki@google.com>
