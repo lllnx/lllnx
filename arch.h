@@ -25,6 +25,7 @@
 #define _HF_ARCH_H_
 
 #include "honggfuzz.h"
+#include "common.h"
 
 extern bool arch_launchChild(run_t* run);
 
@@ -39,5 +40,9 @@ extern void arch_reapChild(run_t* run);
 extern void arch_prepareParent(run_t* run);
 
 extern void arch_prepareParentAfterFork(run_t* run);
+
+extern void arch_getFileName(run_t* run);
+
+extern bool arch_runVerifier(run_t* run);
 
 #endif /* _HF_ARCH_H_ */
