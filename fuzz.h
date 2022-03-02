@@ -25,11 +25,14 @@
 
 #include <honggfuzz.h>
 #include <stdbool.h>
+#include <pthread.h>
 
-extern void        fuzz_threadsStart(honggfuzz_t* fuzz);
+//extern void        fuzz_threadsStart(honggfuzz_t* fuzz);
+extern void        fuzz_threadsStart(honggfuzz_t* fuzz,pthread_t * threads);
 extern bool        fuzz_isTerminating(void);
 extern void        fuzz_setTerminating(void);
 extern bool        fuzz_shouldTerminate(void);
 extern fuzzState_t fuzz_getState(honggfuzz_t* hfuzz);
+extern void fuzz_threadsStop(honggfuzz_t * fuzz, pthread_t * threads);
 
 #endif
