@@ -21,7 +21,12 @@
  *
  */
 
+#include "common.h"
 #include "display.h"
+#include "files.h"
+#include "log.h"
+#include "util.h"
+
 
 #include <errno.h>
 #include <inttypes.h>
