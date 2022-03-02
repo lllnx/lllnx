@@ -272,7 +272,9 @@ static inline void instrumentAddConstMemInternal(const void* mem, size_t len) {
 }
 
 /*
- * -finstrument-functions
+ * -finstrument-functions，跟踪函数调用关系
+ * func参数：当前函数的起始地址
+ * caller参数：返回地址，即调用函数内的地址
  */
 HF_REQUIRE_SSE42_POPCNT void __cyg_profile_func_enter(void* func, void* caller) {
     register size_t pos =
