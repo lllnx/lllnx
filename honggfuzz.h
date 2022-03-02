@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - core structures and macros
+ * honggfuzz - core structures and macros//核心结构和宏
  * -----------------------------------------
  *
  * Author: Robert Swiecki <swiecki@google.com>
