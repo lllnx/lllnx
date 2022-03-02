@@ -1,6 +1,6 @@
 /*
  *
- * honggfuzz - run->dynfile->datafer mangling routines
+ * honggfuzz - run->dynfile->datafer mangling routines//运行->动态文件->数据传输程序
  * -----------------------------------------
  *
  * Author:
