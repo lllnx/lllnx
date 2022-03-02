@@ -21,7 +21,7 @@
  * permissions and limitations under the License.
  *
  */
-
+#include "common.h"
 #include "fuzz.h"
 
 #include <errno.h>
@@ -34,10 +34,20 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
 
+#include "files.h"
+#include "log.h"
+#include "mangle.h"
+#include "sancov.h"
+#include "util.h"
 #include "arch.h"
 #include "honggfuzz.h"
 #include "input.h"
@@ -50,6 +60,7 @@
 #include "socketfuzzer.h"
 #include "subproc.h"
 
+static pthread_t fuzz_mainThread;
 static time_t termTimeStamp = 0;
 
 bool fuzz_isTerminating(void) {
